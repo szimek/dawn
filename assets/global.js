@@ -1,8 +1,8 @@
 function getFocusableElements(container) {
   return Array.from(
     container.querySelectorAll(
-      "summary, a[href], button:enabled, [tabindex]:not([tabindex^='-']), [draggable], area, input:not([type=hidden]):enabled, select:enabled, textarea:enabled, object, iframe"
-    )
+      "summary, a[href], button:enabled, [tabindex]:not([tabindex^='-']), [draggable], area, input:not([type=hidden]):enabled, select:enabled, textarea:enabled, object, iframe",
+    ),
   );
 }
 
@@ -26,11 +26,11 @@ function trapFocus(container, elementToFocus = container) {
     document.addEventListener('keydown', trapFocusHandlers.keydown);
   };
 
-  trapFocusHandlers.focusout = function() {
+  trapFocusHandlers.focusout = function () {
     document.removeEventListener('keydown', trapFocusHandlers.keydown);
   };
 
-  trapFocusHandlers.keydown = function(event) {
+  trapFocusHandlers.keydown = function (event) {
     if (event.code.toUpperCase() !== 'TAB') return; // If not TAB key
     // On the last focusable element and tab forward, focus the first element.
     if (event.target === last && !event.shiftKey) {
@@ -56,13 +56,18 @@ function trapFocus(container, elementToFocus = container) {
 
 function pauseAllMedia() {
   document.querySelectorAll('.js-youtube').forEach((video) => {
-    video.contentWindow.postMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
+    video.contentWindow.postMessage(
+      '{"event":"command","func":"' + 'pauseVideo' + '","args":""}',
+      '*',
+    );
   });
   document.querySelectorAll('.js-vimeo').forEach((video) => {
     video.contentWindow.postMessage('{"method":"pause"}', '*');
   });
   document.querySelectorAll('video').forEach((video) => video.pause());
-  document.querySelectorAll('product-model').forEach((model) => model.modelViewerUI?.pause());
+  document
+    .querySelectorAll('product-model')
+    .forEach((model) => model.modelViewerUI?.pause());
 }
 
 function removeTrapFocus(elementToFocus = null) {
@@ -77,10 +82,10 @@ class QuantityInput extends HTMLElement {
   constructor() {
     super();
     this.input = this.querySelector('input');
-    this.changeEvent = new Event('change', { bubbles: true })
+    this.changeEvent = new Event('change', { bubbles: true });
 
-    this.querySelectorAll('button').forEach(
-      (button) => button.addEventListener('click', this.onButtonClick.bind(this))
+    this.querySelectorAll('button').forEach((button) =>
+      button.addEventListener('click', this.onButtonClick.bind(this)),
     );
   }
 
@@ -89,7 +94,8 @@ class QuantityInput extends HTMLElement {
     const previousValue = this.input.value;
 
     event.target.name === 'plus' ? this.input.stepUp() : this.input.stepDown();
-    if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent);
+    if (previousValue !== this.input.value)
+      this.input.dispatchEvent(this.changeEvent);
   }
 }
 
@@ -103,7 +109,7 @@ function debounce(fn, wait) {
   };
 }
 
-const serializeForm = form => {
+const serializeForm = (form) => {
   const obj = {};
   const formData = new FormData(form);
   for (const key of formData.keys()) {
@@ -115,7 +121,10 @@ const serializeForm = form => {
 function fetchConfig(type = 'json') {
   return {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Accept': `application/${type}` }
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: `application/${type}`,
+    },
   };
 }
 
@@ -123,17 +132,17 @@ function fetchConfig(type = 'json') {
  * Shopify Common JS
  *
  */
-if ((typeof window.Shopify) == 'undefined') {
+if (typeof window.Shopify == 'undefined') {
   window.Shopify = {};
 }
 
-Shopify.bind = function(fn, scope) {
-  return function() {
+Shopify.bind = function (fn, scope) {
+  return function () {
     return fn.apply(scope, arguments);
-  }
+  };
 };
 
-Shopify.setSelectorByValue = function(selector, value) {
+Shopify.setSelectorByValue = function (selector, value) {
   for (var i = 0, count = selector.options.length; i < count; i++) {
     var option = selector.options[i];
     if (value == option.value || value == option.innerHTML) {
@@ -143,24 +152,26 @@ Shopify.setSelectorByValue = function(selector, value) {
   }
 };
 
-Shopify.addListener = function(target, eventName, callback) {
-  target.addEventListener ? target.addEventListener(eventName, callback, false) : target.attachEvent('on'+eventName, callback);
+Shopify.addListener = function (target, eventName, callback) {
+  target.addEventListener
+    ? target.addEventListener(eventName, callback, false)
+    : target.attachEvent('on' + eventName, callback);
 };
 
-Shopify.postLink = function(path, options) {
+Shopify.postLink = function (path, options) {
   options = options || {};
   var method = options['method'] || 'post';
   var params = options['parameters'] || {};
 
-  var form = document.createElement("form");
-  form.setAttribute("method", method);
-  form.setAttribute("action", path);
+  var form = document.createElement('form');
+  form.setAttribute('method', method);
+  form.setAttribute('action', path);
 
-  for(var key in params) {
-    var hiddenField = document.createElement("input");
-    hiddenField.setAttribute("type", "hidden");
-    hiddenField.setAttribute("name", key);
-    hiddenField.setAttribute("value", params[key]);
+  for (var key in params) {
+    var hiddenField = document.createElement('input');
+    hiddenField.setAttribute('type', 'hidden');
+    hiddenField.setAttribute('name', key);
+    hiddenField.setAttribute('value', params[key]);
     form.appendChild(hiddenField);
   }
   document.body.appendChild(form);
@@ -168,34 +179,44 @@ Shopify.postLink = function(path, options) {
   document.body.removeChild(form);
 };
 
-Shopify.CountryProvinceSelector = function(country_domid, province_domid, options) {
-  this.countryEl         = document.getElementById(country_domid);
-  this.provinceEl        = document.getElementById(province_domid);
-  this.provinceContainer = document.getElementById(options['hideElement'] || province_domid);
+Shopify.CountryProvinceSelector = function (
+  country_domid,
+  province_domid,
+  options,
+) {
+  this.countryEl = document.getElementById(country_domid);
+  this.provinceEl = document.getElementById(province_domid);
+  this.provinceContainer = document.getElementById(
+    options['hideElement'] || province_domid,
+  );
 
-  Shopify.addListener(this.countryEl, 'change', Shopify.bind(this.countryHandler,this));
+  Shopify.addListener(
+    this.countryEl,
+    'change',
+    Shopify.bind(this.countryHandler, this),
+  );
 
   this.initCountry();
   this.initProvince();
 };
 
 Shopify.CountryProvinceSelector.prototype = {
-  initCountry: function() {
+  initCountry: function () {
     var value = this.countryEl.getAttribute('data-default');
     Shopify.setSelectorByValue(this.countryEl, value);
     this.countryHandler();
   },
 
-  initProvince: function() {
+  initProvince: function () {
     var value = this.provinceEl.getAttribute('data-default');
     if (value && this.provinceEl.options.length > 0) {
       Shopify.setSelectorByValue(this.provinceEl, value);
     }
   },
 
-  countryHandler: function(e) {
-    var opt       = this.countryEl.options[this.countryEl.selectedIndex];
-    var raw       = opt.getAttribute('data-provinces');
+  countryHandler: function (e) {
+    var opt = this.countryEl.options[this.countryEl.selectedIndex];
+    var raw = opt.getAttribute('data-provinces');
     var provinces = JSON.parse(raw);
 
     this.clearOptions(this.provinceEl);
@@ -209,24 +230,24 @@ Shopify.CountryProvinceSelector.prototype = {
         this.provinceEl.appendChild(opt);
       }
 
-      this.provinceContainer.style.display = "";
+      this.provinceContainer.style.display = '';
     }
   },
 
-  clearOptions: function(selector) {
+  clearOptions: function (selector) {
     while (selector.firstChild) {
       selector.removeChild(selector.firstChild);
     }
   },
 
-  setOptions: function(selector, values) {
+  setOptions: function (selector, values) {
     for (var i = 0, count = values.length; i < values.length; i++) {
       var opt = document.createElement('option');
       opt.value = values[i];
       opt.innerHTML = values[i];
       selector.appendChild(opt);
     }
-  }
+  },
 };
 
 class MenuDrawer extends HTMLElement {
@@ -237,7 +258,11 @@ class MenuDrawer extends HTMLElement {
     const summaryElements = this.querySelectorAll('summary');
     this.addAccessibilityAttributes(summaryElements);
 
-    if (navigator.platform === 'iPhone') document.documentElement.style.setProperty('--viewport-height', `${window.innerHeight}px`);
+    if (navigator.platform === 'iPhone')
+      document.documentElement.style.setProperty(
+        '--viewport-height',
+        `${window.innerHeight}px`,
+      );
 
     this.addEventListener('keyup', this.onKeyUp.bind(this));
     this.addEventListener('focusout', this.onFocusOut.bind(this));
@@ -245,12 +270,16 @@ class MenuDrawer extends HTMLElement {
   }
 
   bindEvents() {
-    this.querySelectorAll('summary').forEach(summary => summary.addEventListener('click', this.onSummaryClick.bind(this)));
-    this.querySelectorAll('button').forEach(button => button.addEventListener('click', this.onCloseButtonClick.bind(this)));
+    this.querySelectorAll('summary').forEach((summary) =>
+      summary.addEventListener('click', this.onSummaryClick.bind(this)),
+    );
+    this.querySelectorAll('button').forEach((button) =>
+      button.addEventListener('click', this.onCloseButtonClick.bind(this)),
+    );
   }
 
   addAccessibilityAttributes(summaryElements) {
-    summaryElements.forEach(element => {
+    summaryElements.forEach((element) => {
       element.setAttribute('role', 'button');
       element.setAttribute('aria-expanded', false);
       element.setAttribute('aria-controls', element.nextElementSibling.id);
@@ -258,12 +287,14 @@ class MenuDrawer extends HTMLElement {
   }
 
   onKeyUp(event) {
-    if(event.code.toUpperCase() !== 'ESCAPE') return;
+    if (event.code.toUpperCase() !== 'ESCAPE') return;
 
     const openDetailsElement = event.target.closest('details[open]');
-    if(!openDetailsElement) return;
+    if (!openDetailsElement) return;
 
-    openDetailsElement === this.mainDetailsToggle ? this.closeMenuDrawer(this.mainDetailsToggle.querySelector('summary')) : this.closeSubmenu(openDetailsElement);
+    openDetailsElement === this.mainDetailsToggle
+      ? this.closeMenuDrawer(this.mainDetailsToggle.querySelector('summary'))
+      : this.closeSubmenu(openDetailsElement);
   }
 
   onSummaryClick(event) {
@@ -272,10 +303,15 @@ class MenuDrawer extends HTMLElement {
     const isOpen = detailsElement.hasAttribute('open');
 
     if (detailsElement === this.mainDetailsToggle) {
-      if(isOpen) event.preventDefault();
-      isOpen ? this.closeMenuDrawer(summaryElement) : this.openMenuDrawer(summaryElement);
+      if (isOpen) event.preventDefault();
+      isOpen
+        ? this.closeMenuDrawer(summaryElement)
+        : this.openMenuDrawer(summaryElement);
     } else {
-      trapFocus(summaryElement.nextElementSibling, detailsElement.querySelector('button'));
+      trapFocus(
+        summaryElement.nextElementSibling,
+        detailsElement.querySelector('button'),
+      );
 
       setTimeout(() => {
         detailsElement.classList.add('menu-opening');
@@ -295,12 +331,16 @@ class MenuDrawer extends HTMLElement {
   closeMenuDrawer(event, elementToFocus = false) {
     if (event !== undefined) {
       this.mainDetailsToggle.classList.remove('menu-opening');
-      this.mainDetailsToggle.querySelectorAll('details').forEach(details =>  {
+      this.mainDetailsToggle.querySelectorAll('details').forEach((details) => {
         details.removeAttribute('open');
         details.classList.remove('menu-opening');
       });
-      this.mainDetailsToggle.querySelector('summary').setAttribute('aria-expanded', false);
-      document.body.classList.remove(`overflow-hidden-${this.dataset.breakpoint}`);
+      this.mainDetailsToggle
+        .querySelector('summary')
+        .setAttribute('aria-expanded', false);
+      document.body.classList.remove(
+        `overflow-hidden-${this.dataset.breakpoint}`,
+      );
       removeTrapFocus(elementToFocus);
       this.closeAnimation(this.mainDetailsToggle);
     }
@@ -308,7 +348,11 @@ class MenuDrawer extends HTMLElement {
 
   onFocusOut(event) {
     setTimeout(() => {
-      if (this.mainDetailsToggle.hasAttribute('open') && !this.mainDetailsToggle.contains(document.activeElement)) this.closeMenuDrawer();
+      if (
+        this.mainDetailsToggle.hasAttribute('open') &&
+        !this.mainDetailsToggle.contains(document.activeElement)
+      )
+        this.closeMenuDrawer();
     });
   }
 
@@ -338,10 +382,13 @@ class MenuDrawer extends HTMLElement {
       } else {
         detailsElement.removeAttribute('open');
         if (detailsElement.closest('details[open]')) {
-          trapFocus(detailsElement.closest('details[open]'), detailsElement.querySelector('summary'));
+          trapFocus(
+            detailsElement.closest('details[open]'),
+            detailsElement.querySelector('summary'),
+          );
         }
       }
-    }
+    };
 
     window.requestAnimationFrame(handleAnimation);
   }
@@ -355,9 +402,21 @@ class HeaderDrawer extends MenuDrawer {
   }
 
   openMenuDrawer(summaryElement) {
-    this.header = this.header || document.getElementById('shopify-section-header');
-    this.borderOffset = this.borderOffset || this.closest('.header-wrapper').classList.contains('header-wrapper--border-bottom') ? 1 : 0;
-    document.documentElement.style.setProperty('--header-bottom-position', `${parseInt(this.header.getBoundingClientRect().bottom - this.borderOffset)}px`);
+    this.header =
+      this.header || document.getElementById('shopify-section-header');
+    this.borderOffset =
+      this.borderOffset ||
+      this.closest('.header-wrapper').classList.contains(
+        'header-wrapper--border-bottom',
+      )
+        ? 1
+        : 0;
+    document.documentElement.style.setProperty(
+      '--header-bottom-position',
+      `${parseInt(
+        this.header.getBoundingClientRect().bottom - this.borderOffset,
+      )}px`,
+    );
 
     setTimeout(() => {
       this.mainDetailsToggle.classList.add('menu-opening');
@@ -376,7 +435,7 @@ class ModalDialog extends HTMLElement {
     super();
     this.querySelector('[id^="ModalClose-"]').addEventListener(
       'click',
-      this.hide.bind(this)
+      this.hide.bind(this),
     );
     this.addEventListener('click', (event) => {
       if (event.target.nodeName === 'MODAL-DIALOG') this.hide();
@@ -418,17 +477,26 @@ customElements.define('modal-opener', ModalOpener);
 class DeferredMedia extends HTMLElement {
   constructor() {
     super();
-    this.querySelector('[id^="Deferred-Poster-"]')?.addEventListener('click', this.loadContent.bind(this));
+    this.querySelector('[id^="Deferred-Poster-"]')?.addEventListener(
+      'click',
+      this.loadContent.bind(this),
+    );
   }
 
   loadContent() {
     if (!this.getAttribute('loaded')) {
       const content = document.createElement('div');
-      content.appendChild(this.querySelector('template').content.firstElementChild.cloneNode(true));
+      content.appendChild(
+        this.querySelector('template').content.firstElementChild.cloneNode(
+          true,
+        ),
+      );
 
       this.setAttribute('loaded', true);
       window.pauseAllMedia();
-      this.appendChild(content.querySelector('video, model-viewer, iframe')).focus();
+      this.appendChild(
+        content.querySelector('video, model-viewer, iframe'),
+      ).focus();
     }
   }
 }
@@ -447,7 +515,7 @@ class SliderComponent extends HTMLElement {
 
     if (!this.slider || !this.nextButton) return;
 
-    const resizeObserver = new ResizeObserver(entries => this.initPages());
+    const resizeObserver = new ResizeObserver((entries) => this.initPages());
     resizeObserver.observe(this.slider);
 
     this.slider.addEventListener('scroll', this.update.bind(this));
@@ -457,14 +525,17 @@ class SliderComponent extends HTMLElement {
 
   initPages() {
     if (!this.sliderItems.length === 0) return;
-    this.slidesPerPage = Math.floor(this.slider.clientWidth / this.sliderItems[0].clientWidth);
+    this.slidesPerPage = Math.floor(
+      this.slider.clientWidth / this.sliderItems[0].clientWidth,
+    );
     this.totalPages = this.sliderItems.length - this.slidesPerPage + 1;
     this.update();
   }
 
   update() {
     if (!this.pageCount || !this.pageTotal) return;
-    this.currentPage = Math.round(this.slider.scrollLeft / this.sliderItems[0].clientWidth) + 1;
+    this.currentPage =
+      Math.round(this.slider.scrollLeft / this.sliderItems[0].clientWidth) + 1;
 
     if (this.currentPage === 1) {
       this.prevButton.setAttribute('disabled', true);
@@ -484,9 +555,12 @@ class SliderComponent extends HTMLElement {
 
   onButtonClick(event) {
     event.preventDefault();
-    const slideScrollPosition = event.currentTarget.name === 'next' ? this.slider.scrollLeft + this.sliderItems[0].clientWidth : this.slider.scrollLeft - this.sliderItems[0].clientWidth;
+    const slideScrollPosition =
+      event.currentTarget.name === 'next'
+        ? this.slider.scrollLeft + this.sliderItems[0].clientWidth
+        : this.slider.scrollLeft - this.sliderItems[0].clientWidth;
     this.slider.scrollTo({
-      left: slideScrollPosition
+      left: slideScrollPosition,
     });
   }
 }
@@ -512,40 +586,53 @@ class VariantSelects extends HTMLElement {
       this.updateMedia();
       this.updateURL();
       this.updateVariantInput();
-      this.renderProductInfo();
+      this.renderProductInfoAndMedia();
     }
   }
 
   updateOptions() {
-    this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+    this.options = Array.from(
+      this.querySelectorAll('select'),
+      (select) => select.value,
+    );
   }
 
   updateMasterId() {
     this.currentVariant = this.getVariantData().find((variant) => {
-      return !variant.options.map((option, index) => {
-        return this.options[index] === option;
-      }).includes(false);
+      return !variant.options
+        .map((option, index) => {
+          return this.options[index] === option;
+        })
+        .includes(false);
     });
   }
 
   updateMedia() {
     if (!this.currentVariant || !this.currentVariant?.featured_media) return;
     const newMedia = document.querySelector(
-      `[data-media-id="${this.dataset.section}-${this.currentVariant.featured_media.id}"]`
+      `[data-media-id="${this.dataset.section}-${this.currentVariant.featured_media.id}"]`,
     );
     if (!newMedia) return;
     const parent = newMedia.parentElement;
     parent.prepend(newMedia);
-    window.setTimeout(() => { parent.scroll(0, 0) });
+    window.setTimeout(() => {
+      parent.scroll(0, 0);
+    });
   }
 
   updateURL() {
     if (!this.currentVariant) return;
-    window.history.replaceState({ }, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+    window.history.replaceState(
+      {},
+      '',
+      `${this.dataset.url}?variant=${this.currentVariant.id}`,
+    );
   }
 
   updateVariantInput() {
-    const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment`);
+    const productForms = document.querySelectorAll(
+      `#product-form-${this.dataset.section}, #product-form-installment`,
+    );
     productForms.forEach((productForm) => {
       const input = productForm.querySelector('input[name="id"]');
       input.value = this.currentVariant.id;
@@ -565,24 +652,49 @@ class VariantSelects extends HTMLElement {
     }
   }
 
-  renderProductInfo() {
-    fetch(`${this.dataset.url}?variant=${this.currentVariant.id}&section_id=${this.dataset.section}`)
+  renderProductInfoAndMedia() {
+    const { dataset, currentVariant } = this;
+
+    fetch(
+      `${dataset.url}?variant=${currentVariant.id}&section_id=${dataset.section}`,
+    )
       .then((response) => response.text())
       .then((responseText) => {
-        const id = `price-${this.dataset.section}`;
-        const html = new DOMParser().parseFromString(responseText, 'text/html')
-        const destination = document.getElementById(id);
-        const source = html.getElementById(id);
+        const html = new DOMParser().parseFromString(responseText, 'text/html');
 
-        if (source && destination) destination.innerHTML = source.innerHTML;
+        function updatePrice() {
+          const id = `price-${dataset.section}`;
+          const destination = document.getElementById(id);
+          const source = html.getElementById(id);
 
-        document.getElementById(`price-${this.dataset.section}`)?.classList.remove('visibility-hidden');
-        this.toggleAddButton(!this.currentVariant.available, window.variantStrings.soldOut);
+          if (source && destination) destination.innerHTML = source.innerHTML;
+
+          document.getElementById(id)?.classList.remove('visibility-hidden');
+        }
+
+        function updateMedia() {
+          const id = `ProductMedia-${dataset.section}`;
+          const destination = document.getElementById(id);
+          const source = html.getElementById(id);
+
+          if (source && destination) destination.innerHTML = source.innerHTML;
+
+          document.getElementById(id)?.classList.remove('visibility-hidden');
+        }
+
+        updatePrice();
+        updateMedia();
+        this.toggleAddButton(
+          !currentVariant.available,
+          window.variantStrings.soldOut,
+        );
       });
   }
 
   toggleAddButton(disable = true, text, modifyClass = true) {
-    const addButton = document.getElementById(`product-form-${this.dataset.section}`)?.querySelector('[name="add"]');
+    const addButton = document
+      .getElementById(`product-form-${this.dataset.section}`)
+      ?.querySelector('[name="add"]');
 
     if (!addButton) return;
 
@@ -598,14 +710,20 @@ class VariantSelects extends HTMLElement {
   }
 
   setUnavailable() {
-    const addButton = document.getElementById(`product-form-${this.dataset.section}`)?.querySelector('[name="add"]');
+    const addButton = document
+      .getElementById(`product-form-${this.dataset.section}`)
+      ?.querySelector('[name="add"]');
     if (!addButton) return;
     addButton.textContent = window.variantStrings.unavailable;
-    document.getElementById(`price-${this.dataset.section}`)?.classList.add('visibility-hidden');
+    document
+      .getElementById(`price-${this.dataset.section}`)
+      ?.classList.add('visibility-hidden');
   }
 
   getVariantData() {
-    this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+    this.variantData =
+      this.variantData ||
+      JSON.parse(this.querySelector('[type="application/json"]').textContent);
     return this.variantData;
   }
 }
@@ -620,7 +738,9 @@ class VariantRadios extends VariantSelects {
   updateOptions() {
     const fieldsets = Array.from(this.querySelectorAll('fieldset'));
     this.options = fieldsets.map((fieldset) => {
-      return Array.from(fieldset.querySelectorAll('input')).find((radio) => radio.checked).value;
+      return Array.from(fieldset.querySelectorAll('input')).find(
+        (radio) => radio.checked,
+      ).value;
     });
   }
 }
