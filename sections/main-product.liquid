@@ -43,18 +43,22 @@
               {%- endunless -%}
             {%- endfor -%}
           {%- else -%}
-            {%- assign featured_media_ids = product.variants | map: "featured_media" | map: "id" -%}
-            {%- assign current_variant_featured_media = product.selected_or_first_available_variant.featured_media -%}
-            {%- assign current_variant_media_started = false -%}
-            {%- assign current_variant_media_ended = false -%}
-            {%- assign any_variant_media_started = false -%}
+            {%- liquid
+              assign featured_media_ids = product.variants | map: "featured_media" | where: "id" | map: "id"
+              assign current_variant_featured_media = product.selected_or_first_available_variant.featured_media
+              assign current_variant_media_started = false
+              assign current_variant_media_ended = false
+              assign any_variant_media_started = false
+            -%}
 
-            {% comment %} Variant specific media {% endcomment %}
+            <div>Variants' feature media IDs: {{ featured_media_ids | join: ", " }}</div>
+
+            {% comment %} Media specific for current variant {% endcomment %}
             {%- for media in product.media -%}
               {% comment %}
-              If current media is a featured media for any variant and we've already seen
-              featured media for the current variant, then it means we reached the end of media
-              for the current variant.
+                If current media is a featured media for any variant and we've already seen
+                featured media for the current variant, then it means we reached the end of media
+                for the current variant.
               {% endcomment %}
               {%- if featured_media_ids contains media.id and current_variant_media_started == true -%}
                 {%- assign current_variant_media_ended = true -%}
@@ -67,15 +71,17 @@
               {%- endif-%}
 
               {% comment %}
-              If current media is a featured media for the current variant, then it means we
-              reached the beginning of media for the current variant.
+                If current media is a featured media for the current variant, then it means we
+                reached the beginning of media for the current variant.
               {% endcomment %}
-              {%- if media.id == current_variant_featured_media.id -%}
-                {%- assign current_variant_media_started = true -%}
-              {%- endif -%}
+              {%- liquid
+                if media.id == current_variant_featured_media.id
+                  assign current_variant_media_started = true
+                endif
+              -%}
             {%- endfor -%}
 
-            {% comment %} Common media {% endcomment %}
+            {% comment %} Media common to all variants {% endcomment %}
             {%- for media in product.media -%}
               {% comment %} Render images until we reach featured_media for any variant {% endcomment %}
               {%- if featured_media_ids contains media.id and any_variant_media_started == false -%}
